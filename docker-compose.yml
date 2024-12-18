@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: 3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/auth-service:/usr/src/app              # Monta il codice sorgente del microservizio
+      - /usr/src/app/node_modules                    # Esclude node_modules locale
+      - ./package.json:/usr/src/app/package.json     # Monta il package.json globale
+      - ./tsconfig.json:/usr/src/app/tsconfig.json   # Monta il tsconfig globale
+    environment:
+      - PORT=3001
+    command: npm run start:dev
+
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: 3002
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./apps/user-service:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./package.json:/usr/src/app/package.json
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
+    environment:
+      - PORT=3002
+    command: npm run start:dev
